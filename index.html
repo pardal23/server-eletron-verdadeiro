@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Web Scraper Completo</title>
+<style>
+body { font-family: Arial; padding: 20px; background: #eef1f5; }
+.box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+input, button { padding: 10px; font-size: 16px; }
+button { cursor: pointer; }
+#links a { display:block; margin-bottom:4px; word-break: break-all; }
+h2, h3 { margin-top: 0; }
+pre { background:#111; color:#0f0; padding:10px; border-radius:5px; }
+.tag { display:inline-block; font-size:12px; padding:2px 6px; border-radius:4px; margin-left:6px; }
+.int { background:#d0e8ff; color:#0066cc; }
+.ext { background:#ffe0d5; color:#cc3300; }
+.res { background:#e6e6e6; color:#555; }
+.filter-btn { margin-right:6px; padding:6px 12px; border:0; border-radius:6px; background:#ddd; }
+.filter-btn.active { background:#556bff; color:#fff; }
+h3{color:orange;}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+    <h2>Web Scraper Profissional (Completo)</h2>
+
+    <input id="url" type="text" size="50" placeholder="https://www.baidu.com">
+    <button onclick="scrape()">Capturar</button>
+    <button onclick="exportTXT()">Exportar TXT</button>
+    <button onclick="clearAll()">Limpar</button>
+
+    <pre id="status">Pronto.</pre>
+
+    <h3>Filtros:</h3>
+    <button class="filter-btn active" data-filter="all" onclick="applyFilter('all', this)">Todos</button>
+    <button class="filter-btn" data-filter="internal" onclick="applyFilter('internal', this)">Internos</button>
+    <button class="filter-btn" data-filter="external" onclick="applyFilter('external', this)">Externos</button>
+    <button class="filter-btn" data-filter="resource" onclick="applyFilter('resource', this)">Recursos</button>
+
+    <h3>Resultados:</h3>
+    <div id="links"></div>
+
+</div>
+
+<script>
+let allLinks = [];
+let filteredLinks = [];
+
+function log(msg) {
+    document.getElementById("status").textContent = msg;
+}
+
+function clearAll() {
+    allLinks = [];
+    filteredLinks = [];
+    document.getElementById("links").innerHTML = "";
+    log("Limpado.");
+}
+
+function applyFilter(type, btn) {
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    if (type === "all") filteredLinks = [...allLinks];
+    else if (type === "internal") filteredLinks = allLinks.filter(l => l.type === "internal");
+    else if (type === "external") filteredLinks = allLinks.filter(l => l.type === "external");
+    else if (type === "resource") filteredLinks = allLinks.filter(l => l.type === "resource");
+
+    render();
+}
+
+function detectType(url, base) {
+    try {
+        const u = new URL(url);
+        if (u.origin === base.origin) return "internal";
+        return "external";
+    } catch { 
+        return "resource"; 
+    }
+}
+
+function render() {
+    const div = document.getElementById("links");
+    div.innerHTML = "";
+
+    filteredLinks.forEach(l => {
+        const tag = l.type === "internal" ? "int" :
+                    l.type === "external" ? "ext" : "res";
+
+        div.innerHTML += `<a href="${l.url}" target="_blank">${l.url}
+            <span class="tag ${tag}">${l.type}</span></a>`;
+    });
+}
+
+async function scrape() {
+    const url = document.getElementById("url").value.trim();
+    if (!url) return alert("Insere uma URL.");
+
+    log("Iniciando...");
+    allLinks = [];
+    filteredLinks = [];
+    render();
+
+   const proxies = [
+    "https://corsproxy.io/?",
+    "https://api.allorigins.win/raw?url=",
+    "https://thingproxy.freeboard.io/fetch/",
+    "https://api.codetabs.com/v1/proxy?quest=",
+    "https://cors-anywhere.herokuapp.com/",
+    "https://allorigins.hexlet.app/get?url=",
+    "https://api.allorigins.win/get?url=",
+    "https://thingproxy.freeboard.io/fetch/",
+    "https://api.allorigins.win/raw?url="
+];
+
+
+    let html = null;
+    let lastErr = "";
+
+    for (let proxy of proxies) {
+        try {
+            log("Tentando proxy: " + proxy);
+            const res = await fetch(proxy + encodeURIComponent(url));
+            if (!res.ok) throw new Error(res.status);
+            html = await res.text();
+            break;
+        } catch (e) {
+            lastErr = e.message;
+        }
+    }
+
+    if (!html) {
+        log("Erro: " + lastErr);
+        return;
+    }
+
+    log("HTML carregado. Extraindo...");
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    const base = new URL(url);
+
+    const anchors = [...doc.querySelectorAll("a[href]")];
+    const images  = [...doc.querySelectorAll("img[src]")];
+    const scripts = [...doc.querySelectorAll("script[src]")];
+    const css     = [...doc.querySelectorAll("link[href]")];
+
+    function add(arr, attr, elementType) {
+        arr.forEach(el => {
+            const raw = el.getAttribute(attr);
+            if (!raw) return;
+
+            try {
+                const abs = new URL(raw, base).href;
+                if (!allLinks.some(x => x.url === abs)) {
+                    const type = detectType(abs, base);
+                    allLinks.push({ url: abs, type, elementType });
+                }
+            } catch {}
+        });
+    }
+
+    add(anchors, "href", "anchor");
+    add(images, "src", "resource");
+    add(scripts, "src", "resource");
+    add(css, "href", "resource");
+
+    filteredLinks = [...allLinks];
+
+    render();
+    log(`Concluído. ${allLinks.length} links extraídos.`);
+}
+
+function exportTXT() {
+    if (allLinks.length === 0) return alert("Nada para exportar.");
+
+    let txt = "RELATÓRIO DE LINKS\n==========================\n";
+    txt += "URL base: " + document.getElementById("url").value + "\n";
+    txt += "Total: " + allLinks.length + "\n\n";
+
+    allLinks.forEach(l => {
+        txt += `${l.type.toUpperCase()} - ${l.url}\n`;
+    });
+
+    const blob = new Blob([txt], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "links.txt";
+    a.click();
+}
+</script>
+<p>executar e instalar=== npm install</p>
+<h3>Copyright mcegonha 2025 todos os direitos reservados</h3>
+<p><a href="https://jesusempoesia.blogspot.com/p/index-html-com-mais-proxis-server.html">Jesus em poesia == projeto server eletron</a></p>
+</body>
+</html>
