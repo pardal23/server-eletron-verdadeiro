@@ -1,0 +1,75 @@
+<style>
+h2{
+color:orange;
+}
+h3{
+color:blue;
+}
+
+</style>
+
+
+<h2>Mudar link pai para cada url alvo</h2>
+<h3>abrir html site alvo na console do pc</h3>
+
+<script>
+// Lista de proxies fornecida
+const proxies = [
+    "https://corsproxy.io/?",
+    "https://api.allorigins.win/raw?url=",
+    "https://thingproxy.freeboard.io/fetch/",
+    "https://api.codetabs.com/v1/proxy?quest=",
+    "https://mocors.vercel.app/api?url=",
+    "https://cors.isomorphic-git.org/?url="
+];
+
+/**
+ * Faz fetch usando múltiplos proxies até um funcionar
+ * @param {string} url - URL original que queres buscar
+ * @returns {Promise<Response>} resposta válida
+ */
+async function fetchWithProxies(url) {
+    for (const proxy of proxies) {
+        const proxiedUrl = proxy + encodeURIComponent(url);
+
+        try {
+            const response = await fetch(proxiedUrl);
+
+            if (response.ok) {
+                console.log("Proxy OK:", proxy);
+                return response; // devolve a primeira resposta válida
+            } else {
+                console.warn("Proxy falhou (resposta não OK):", proxy);
+            }
+        } catch (err) {
+            console.warn("Erro no proxy:", proxy, err);
+        }
+    }
+
+    throw new Error("Nenhum proxy funcionou!");
+}
+
+// EXEMPLO DE USO
+async function carregarConteudo() {
+    const url = "https://cbr.ru/eng/"; // muda para a URL que quiseres
+
+    try {
+        const response = await fetchWithProxies(url);
+        const data = await response.text(); // ou response.json()
+
+        // Mostra no ecrã
+        document.getElementById("resultadoProxy").textContent = data;
+
+    } catch (err) {
+        document.getElementById("resultadoProxy").textContent =
+            "Erro ao carregar via proxy: " + err;
+    }
+}
+
+window.onload = carregarConteudo;
+</script>
+
+<div style="white-space:pre-wrap; background:#f0f0f0; padding:10px; border-radius:6px;">
+    <strong>Resultado do carregamento via proxy:</strong>
+    <div id="resultadoProxy">Carregando...</div>
+</div>
