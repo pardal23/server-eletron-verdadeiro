@@ -1,0 +1,178 @@
+<div id="resultado"></div>
+
+<script>
+const nome = "João";
+const idade = 30;
+const cidade = "Lisboa";
+const país = "Portugal";
+const profissão = "Programador";
+
+// podes criar 10, 20, 100 const…
+const tudo = [nome, idade, cidade, país, profissão];
+
+document.getElementById("resultado").innerHTML = tudo.join("<br>");
+</script>
+
+
+<h1>Segunda maneira de programar javaScript pratico</h1>
+
+
+<!DOCTYPE html>
+<html>
+<body>
+
+<h3>Resultado do chamamento da function:</h3>
+
+<div id="resultado" style="background:#eee; padding:10px;"></div>
+
+<script>
+// --- tuas const (podes criar quantas quiser) ---
+const carro = "Ferrari";
+const cor = "Vermelha";
+const ano = 2025;
+const dono = "Mano João";
+
+// --- function que retorna todas as const num só chamamento ---
+function pegarTudo() {
+    return [carro, cor, ano, dono];
+}
+
+// --- usar a função e mostrar no HTML ---
+document.getElementById("resultado").innerHTML =
+    pegarTudo().join("<br>");
+</script>
+
+</body>
+</html>
+
+
+<h3>function carrega direto no server navegador</h3>
+<##################SERVER FUNCTION CARREGAR###########>
+<div style="max-width:400px; margin:auto; padding:20px; background:#f4f4f4; border-radius:10px; text-align:center;">
+  <h2>Pesquisa Interna</h2>
+  <input type="text" id="searchInput" placeholder="Pesquisar..." style="width:90%; padding:10px; border-radius:8px; border:1px solid #bbb;">
+  <br><br>
+  <button onclick="pesquisar()" style="padding:10px 20px; border:none; border-radius:8px; background:#0099ff; color:white; cursor:pointer;">Pesquisar</button>
+  <ul id="resultados" style="list-style:none; padding:0; margin-top:15px;"></ul>
+</div>
+
+<script>
+const dados = [
+  "Jesus em Poesia",
+  "Salmos do Amor",
+  "Poemas de Fé",
+  "Histórias Sagradas",
+  "Louvores e Orações",
+  "Textos Bíblicos"
+];
+
+function pesquisar() {
+  const termo = document.getElementById("searchInput").value.toLowerCase();
+  const lista = document.getElementById("resultados");
+  lista.innerHTML = "";
+
+  dados.forEach(item => {
+    // Se o input estiver vazio ou se o item incluir o termo
+    if (!termo || item.toLowerCase().includes(termo)) {
+      const li = document.createElement("li");
+      li.textContent = item;
+      li.style.padding = "8px";
+      li.style.border = "1px solid #ddd";
+      li.style.marginBottom = "5px";
+      li.style.borderRadius = "6px";
+      li.style.background = "#fff";
+      li.style.textAlign = "left";
+      lista.appendChild(li);
+    }
+  });
+}
+
+// Mostra todos os itens ao carregar a página
+window.onload = pesquisar;
+</script>
+
+
+
+<h2>Mudar link pai para cada url alvo</h2>
+<h3>abrir html site alvo na console do pc<br>CARREGAR CONTEUDO PEDINDO NA pesquisa interior do site alvo</h3>
+
+<script>
+// Lista de proxies fornecida
+const proxies = [
+    "https://corsproxy.io/?",
+    "https://api.allorigins.win/raw?url=",
+    "https://thingproxy.freeboard.io/fetch/",
+    "https://api.codetabs.com/v1/proxy?quest=",
+    "https://mocors.vercel.app/api?url=",
+    "https://cors.isomorphic-git.org/?url="
+];
+
+/**
+ * Faz fetch usando múltiplos proxies até um funcionar
+ * @param {string} url - URL original que queres buscar
+ * @returns {Promise<Response>} resposta válida
+ */
+async function fetchWithProxies(url) {
+    for (const proxy of proxies) {
+        const proxiedUrl = proxy + encodeURIComponent(url);
+
+        try {
+            const response = await fetch(proxiedUrl);
+
+            if (response.ok) {
+                console.log("Proxy OK:", proxy);
+                return response; // devolve a primeira resposta válida
+            } else {
+                console.warn("Proxy falhou (resposta não OK):", proxy);
+            }
+        } catch (err) {
+            console.warn("Erro no proxy:", proxy, err);
+        }
+    }
+
+    throw new Error("Nenhum proxy funcionou!");
+}
+
+// EXEMPLO DE USO
+async function carregarConteudo() {
+    const url = "https://cbr.ru/eng/"; // muda para a URL que quiseres
+
+    try {
+        const response = await fetchWithProxies(url);
+        const data = await response.text(); // ou response.json()
+
+        // Mostra no ecrã
+        document.getElementById("resultadoProxy").textContent = data;
+
+    } catch (err) {
+        document.getElementById("resultadoProxy").textContent =
+            "Erro ao carregar via proxy: " + err;
+    }
+}
+
+window.onload = carregarConteudo;
+</script>
+
+<div style="white-space:pre-wrap; background:#f0f0f0; padding:10px; border-radius:6px;">
+    <strong>Resultado do carregamento via proxy:</strong>
+    <div id="resultadoProxy">Carregando...</div>
+</div>
+
+
+<h2>base CSS</h2>
+<#################################CSS BASE##########>
+<div class="caixa">
+    Conteúdo centralizado com margin, background, e padding.
+</div>
+
+<style>
+.caixa {
+    margin-top: 20px; /* distância do topo */
+    background-image: url("https://picsum.photos/600/200"); /* imagem de fundo */
+    text-align: center; /* texto ao centro */
+    padding: 20px; /* espaço interno */
+    color: white; /* só para ficar mais bonito */
+    background-size: cover; /* faz a imagem preencher a caixa */
+    font-size:23px;/*tamanho da letra*\
+}
+</style>
