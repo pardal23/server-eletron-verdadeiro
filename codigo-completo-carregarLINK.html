@@ -1,0 +1,136 @@
+<div style="max-width:400px; margin:auto; padding:20px; background:#f4f4f4; border-radius:10px; text-align:center;">
+  <h2>Pesquisa Interna</h2>
+  <input type="text" id="searchInput" placeholder="Pesquisar..." style="width:90%; padding:10px; border-radius:8px; border:1px solid #bbb;">
+  <br><br>
+  <button onclick="pesquisar()" style="padding:10px 20px; border:none; border-radius:8px; background:#0099ff; color:white; cursor:pointer;">Pesquisar</button>
+  <ul id="resultados" style="list-style:none; padding:0; margin-top:15px;"></ul>
+</div>
+
+<script>
+const dados = [
+  "Jesus em Poesia",
+  "Salmos do Amor",
+  "Poemas de Fé",
+  "Histórias Sagradas",
+  "Louvores e Orações",
+  "Textos Bíblicos"
+];
+
+function pesquisar() {
+  const termo = document.getElementById("searchInput").value.toLowerCase();
+  const lista = document.getElementById("resultados");
+  lista.innerHTML = "";
+
+  dados.forEach(item => {
+    if (!termo || item.toLowerCase().includes(termo)) {
+      const li = document.createElement("li");
+      li.textContent = item;
+      li.style.padding = "8px";
+      li.style.border = "1px solid #ddd";
+      li.style.marginBottom = "5px";
+      li.style.borderRadius = "6px";
+      li.style.background = "#fff";
+      li.style.textAlign = "left";
+      
+      // 🔥 INTEGRAÇÃO: ao clicar, carregar o conteúdo do link
+      li.onclick = () => {
+        const url = criarLinkDoItem(item);
+        carregarLink(url, "resultadoProxy");
+      };
+
+      lista.appendChild(li);
+    }
+  });
+}
+
+// Mostra todos os itens ao carregar a página
+window.onload = pesquisar;
+</script>
+
+
+
+<h2>Mudar link pai para cada url alvo</h2>
+<h3>abrir html site alvo na console do pc<br>CARREGAR CONTEUDO PEDINDO NA pesquisa interior do site alvo</h3>
+
+<script>
+// Lista de proxies fornecida
+const proxies = [
+    "https://corsproxy.io/?",
+    "https://api.allorigins.win/raw?url=",
+    "https://thingproxy.freeboard.io/fetch/",
+    "https://api.codetabs.com/v1/proxy?quest=",
+    "https://mocors.vercel.app/api?url=",
+    "https://cors.isomorphic-git.org/?url="
+];
+
+/**
+ * Faz fetch usando múltiplos proxies até um funcionar
+ * @param {string} url - URL original que queres buscar
+ * @returns {Promise<Response>} resposta válida
+ */
+async function fetchWithProxies(url) {
+    for (const proxy of proxies) {
+        const proxiedUrl = proxy + encodeURIComponent(url);
+
+        try {
+            const response = await fetch(proxiedUrl);
+
+            if (response.ok) {
+                console.log("Proxy OK:", proxy);
+                return response;
+            } else {
+                console.warn("Proxy falhou:", proxy);
+            }
+        } catch (err) {
+            console.warn("Erro no proxy:", proxy, err);
+        }
+    }
+
+    throw new Error("Nenhum proxy funcionou!");
+}
+
+/**
+ * 🔥 NOVA FUNÇÃO PEDIDA
+ * Carrega qualquer URL usando proxies
+ */
+async function carregarLink(url, destinoId = null) {
+    try {
+        const response = await fetchWithProxies(url);
+        const html = await response.text();
+
+        console.log("✔ Conteúdo carregado:", url);
+
+        if (destinoId) {
+            document.getElementById(destinoId).textContent = html;
+        }
+
+        return html;
+
+    } catch (err) {
+        console.error("Erro ao carregar link:", err);
+
+        if (destinoId) {
+            document.getElementById(destinoId).textContent = "Erro ao carregar: " + err;
+        }
+
+        return null;
+    }
+}
+
+/**
+ * 🔧 Converte os itens da pesquisa em links válidos
+ * Aqui você coloca o domínio verdadeiro onde estão as páginas
+ */
+function criarLinkDoItem(nome) {
+    const base = "https://seusite.com/";  // <-- ALTERE AQUI
+    const slug = nome.toLowerCase().replace(/ /g, "-");
+    return base + slug + ".html";
+}
+</script>
+
+
+<div style="white-space:pre-wrap; background:#f0f0f0; padding:10px; border-radius:6px;">
+    <strong>Resultado do carregamento via proxy:</strong>
+    <div id="resultadoProxy">Aguardando...</div>
+</div>
+<h2>pesquisar link a 2025</h2>
