@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa Avançada com Múltiplos Motores</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input[type="text"] {
+            width: 300px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+        p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<h1 style="color:orange;">usar sempre na pesquisa KEYS true {true}<br>manipular e criar links pdf {true}</h1>
+<body>
+
+<h3>Projeto Base de Dados Link</h3>
+<input type="text" id="search-input" placeholder="Digite sua pesquisa..." oninput="searchLinks()">
+<button id="search-button" onclick="startSearch()">Pesquisar</button>
+
+<div id="results"></div>
+
+<h4>Links de Exemplo:</h4>
+<p><a href="https://cbr.ru/content/document/file/152596/on_eng_2024(2025-2026).pdf" target="_blank">PDF 2024-2026</a></p>
+<p><a href="https://cbr.ru/content/document/file/152.pdf" target="_blank">PDF 202</a></p>
+
+<script>
+    const links = [
+        { href: "https://cbr.ru/content/document/file/152596/on_eng_2024(2025-2026).pdf", label: "PDF 2024-2026" },
+        { href: "https://cbr.ru/content/document/file/152.pdf", label: "PDF 202" },
+    ];
+
+    const searchEngines = [
+        {
+            name: "Google",
+            uri: (query) => `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+        },
+        {
+            name: "Bing",
+            uri: (query) => `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
+        },
+        {
+            name: "Meu Mecanismo de Pesquisa",
+            uri: (query) => `https://www.meumecanismodesearch.com/search?q=${encodeURIComponent(query)}`,
+        }
+    ];
+
+    async function startSearch() {
+        await searchLinks();
+    }
+
+    async function searchLinks() {
+        const input = document.getElementById('search-input').value.trim();
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = ''; // Limpa resultados anteriores
+
+        const isTrueActive = true;
+
+        if (isTrueActive) {
+            const filteredLinks = links.filter(link => link.label.toLowerCase().includes(input.toLowerCase()));
+
+            // Exibe os resultados filtrados
+            if (filteredLinks.length > 0) {
+                filteredLinks.forEach(link => {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<a href="${link.href}" target="_blank">${link.label}</a>`;
+                    resultsContainer.appendChild(p);
+                });
+            } else {
+                resultsContainer.innerHTML = '<p>Nenhum resultado encontrado nos links da base de dados.</p>';
+            }
+
+            // Adiciona links para os motores de pesquisa
+            if (input) {
+                searchEngines.forEach(engine => {
+                    const p = document.createElement('p');
+                    p.innerHTML = `<a href="${engine.uri(input)}" target="_blank">Pesquisar no ${engine.name}</a>`;
+                    resultsContainer.appendChild(p);
+                });
+            }
+        } else {
+            resultsContainer.innerHTML = '<p>A pesquisa está inativa.</p>';
+        }
+    }
+</script>
+
+</body>
+</html>
