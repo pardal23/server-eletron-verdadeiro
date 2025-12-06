@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Pesquisa Ultra Avançada</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  input { width: 80%; padding: 8px; font-size: 16px; }
+  select, button { padding: 8px; font-size: 16px; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<h2>Pesquisa Ultra Avançada</h2>
+
+<input type="text" id="searchInput" value="{(^|\\.(`))documentos-index/ EXEMPLO==minha pesquisa é feita aqui}">
+<br>
+
+<label>Escolha motores de pesquisa (pode selecionar mais de um):</label>
+<br>
+<select id="searchEngine" multiple size="10">
+  <option value="https://www.google.com/?pesquisa=">Google</option>
+  <option value="https://www.bing.com/?pesquisa=">Bing</option>
+  <option value="https://yandex.com/?pesquisa=">Yandex</option>
+  <option value="https://www.duckduckgo.com/?pesquisa=">DuckDuckGo</option>
+  <option value="https://www.baidu.com/?pesquisa=">Baidu</option>
+  <option value="https://dzen.ru/?pesquisa=">Dzen.ru</option>
+  <option value="https://www.justdial.com/?pesquisa=">JustDial</option>
+  <option value="https://m.youtube.com/?pesquisa==">YouTube</option>
+  <option value="https://m.facebook.com/?pesquisa=?q=">Facebook</option>
+  <option value="https://www.startpage.com/sp/?pesquisa=">StartPage</option>
+  
+
+<option value="https://i.maxthon.com/ru-ru.htm/?pesquisa=">https://i.maxthon.com/ru-ru.htm</option>
+</select>
+
+<br>
+<button onclick="performSearch()">Pesquisar</button>
+
+<script>
+function performSearch() {
+  const query = encodeURIComponent(document.getElementById('searchInput').value);
+  const engines = Array.from(document.getElementById('searchEngine').selectedOptions).map(opt => opt.value);
+
+  if (engines.length === 0) {
+    alert('Selecione pelo menos um motor de pesquisa!');
+    return;
+  }
+
+  // Abre cada motor de pesquisa em uma nova janela
+  engines.forEach(url => {
+    window.open(url + query, '_blank', 'width=1000,height=800');
+  });
+}
+</script>
+<p>CRIAR A PESQUISA SEMPRE DENTRO E FORA DO JSON exemplo==<br>{(^|\\.(`))documentos-index/ index docs}cm albufeira</p>
+<br>{
+"ABRIRlink": "https://jesusempoesia.blogspot.com/p/appi-motores-de-busca-world.html",
+"requesição": "executar",
+"aprovado": true
+
+}
+</body>
+</html>
