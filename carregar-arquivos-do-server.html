@@ -1,0 +1,54 @@
+<div style="max-width:400px; margin:auto; padding:20px; background:#f4f4f4; border-radius:10px; text-align:center;">
+  <h2>Carregar Arquivos do Servidor</h2>
+  
+  <!-- Campo de pesquisa -->
+  <input type="text" id="searchInput" placeholder="Pesquisar arquivos..." 
+         style="width:90%; padding:10px; border-radius:8px; border:1px solid #bbb; margin-bottom: 10px;">
+  
+  <button onclick="carregarArquivos()" style="padding:10px; border:none; border-radius:8px; background:#0099ff; color:white; cursor:pointer;">Buscar Arquivos</button>
+  <button onclick="pesquisarArquivos()" style="padding:10px; border:none; border-radius:8px; background:#ff9900; color:white; cursor:pointer; margin-left: 5px;">Pesquisar</button>
+
+  <ul id="resultados" style="list-style:none; padding:0; margin-top:15px;"></ul>
+</div>
+
+<script>
+let arquivos = []; // Armazena os arquivos carregados do servidor
+
+async function carregarArquivos() {
+  const response = await fetch('/api/arquivos'); // Endpoint que retorna a lista de arquivos
+  if (!response.ok) {
+    console.error('Erro ao carregar arquivos');
+    return;
+  }
+
+  arquivos = await response.json(); // Essa API deve retornar um array de arquivos
+  exibirArquivos(arquivos); // Exibe todos os arquivos inicialmente
+}
+
+function exibirArquivos(lista) {
+  const resultados = document.getElementById("resultados");
+  resultados.innerHTML = ""; // Limpa a lista existente
+
+  lista.forEach(arquivo => {
+    const li = document.createElement("li");
+    
+    // Cria um link para o arquivo no servidor
+    const link = document.createElement("a");
+    link.href = '/path/to/your/files/' + arquivo; // Mude este caminho para o verdadeiro
+    link.textContent = arquivo; // Nome do arquivo
+    link.target = "_blank"; // Abre em nova aba
+    
+    li.appendChild(link);
+    resultados.appendChild(li);
+  });
+}
+
+function pesquisarArquivos() {
+  const termo = document.getElementById("searchInput").value.toLowerCase();
+  
+  // Filtra os arquivos armazenados
+  const resultadosFiltrados = arquivos.filter(arquivo => arquivo.toLowerCase().includes(termo));
+  exibirArquivos(resultadosFiltrados); // Exibe os resultados filtrados
+}
+</script>
+
