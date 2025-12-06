@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Mini Ebook Bombado — Código Cru e Magias</title>
+
+<style>
+    body { font-family: sans-serif; background:#f4f4f4; padding:20px; }
+    .ebook-container { max-width:700px; margin:auto; background:white; 
+        padding:20px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.2); }
+
+    button.acordeao { 
+        width:100%; text-align:left; padding:15px; font-size:18px;
+        border:none; background:#007bff; color:white; cursor:pointer;
+        margin-top:10px; border-radius:5px; transition:0.3s;
+    }
+    button.acordeao:hover { background:#0056b3; }
+
+    .conteudo {
+        display:none; background:#fafafa; padding:15px; 
+        border:1px solid #ddd; border-radius:5px;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {opacity:0;}
+        to {opacity:1;}
+    }
+
+    pre {
+        background:#222; color:#0f0;
+        padding:15px; white-space:pre-wrap;
+        border-radius:5px; overflow-x:auto;
+    }
+
+    /* Exemplos visuais extras */
+    .card { padding:15px; border-radius:10px; box-shadow:2px 2px 10px #888; margin:10px 0; background:#fff; }
+    .tooltip { position:relative; display:inline-block; border-bottom:1px dotted black; cursor:pointer; }
+    .tooltip span { visibility:hidden; width:120px; background:#333; color:#fff; text-align:center;
+                    border-radius:5px; padding:5px 0; position:absolute; z-index:1; bottom:125%; left:50%;
+                    margin-left:-60px; opacity:0; transition:opacity 0.3s; }
+    .tooltip:hover span { visibility:visible; opacity:1; }
+</style>
+
+</head>
+<body>
+
+<div class="ebook-container">
+
+<h1>Mini Ebook Bombado: Código Cru + Magias</h1>
+
+<!-- Página 1 — CSS Básico -->
+<button class="acordeao">Página 1 — CSS Básico</button>
+<div class="conteudo">
+<pre><code>
+/* CSS Principal */
+margin-top: 30px;
+padding: 20px;
+text-align: center;
+font-size: 20px;
+background-color: #ffccbc;
+border-radius: 10px;
+box-shadow: 2px 2px 8px #888;
+transition: all 0.3s ease;
+</code></pre>
+</div>
+
+<!-- Página 2 — Consts + Arrays -->
+<button class="acordeao">Página 2 — Consts e Arrays</button>
+<div class="conteudo">
+<pre><code>
+<p id="demo"></p>
+
+const exemplo = "Valor 1";
+const exemplo1 = "Valor 2";
+const exemplo2 = "Valor 3";
+
+const chamar = [exemplo, exemplo1, exemplo2];
+
+document.getElementById("demo").innerHTML = chamar;
+</code></pre>
+</div>
+
+<!-- Página 3 — Function Return -->
+<button class="acordeao">Página 3 — Function Return</button>
+<div class="conteudo">
+<pre><code>
+<p id="demo2"></p>
+
+function pegar() {
+    return "Texto vindo da função";
+}
+
+const lista = ["Item 1", "Item 2", pegar()];
+
+demo2.innerHTML = lista;
+</code></pre>
+</div>
+
+<!-- Página 4 — Objetos JS -->
+<button class="acordeao">Página 4 — Objetos JS</button>
+<div class="conteudo">
+<pre><code>
+const usuario = { nome:"Ana", idade:25, tecnologias:["HTML","CSS","JS"] };
+
+const info = [usuario.nome, usuario.idade, usuario.tecnologias.join(", ")];
+
+document.getElementById("demo").innerHTML = info;
+</code></pre>
+</div>
+
+<!-- Página 5 — Arrays dentro de Arrays -->
+<button class="acordeao">Página 5 — Arrays dentro de Arrays</button>
+<div class="conteudo">
+<pre><code>
+const grupos = [["A1","A2"],["B1","B2"]];
+const todos = grupos.flat(); // junta tudo
+document.getElementById("demo").innerHTML = todos;
+</code></pre>
+</div>
+
+<!-- Página 6 — Funções de Cálculo -->
+<button class="acordeao">Página 6 — Funções de Cálculo</button>
+<div class="conteudo">
+<pre><code>
+function soma(a,b){ return a+b; }
+function dobro(n){ return n*2; }
+
+const resultado = [soma(5,10), dobro(7)];
+
+document.getElementById("demo2").innerHTML = resultado;
+</code></pre>
+</div>
+
+<!-- Página 7 — Magias CSS/HTML -->
+<button class="acordeao">Página 7 — Magias CSS & HTML</button>
+<div class="conteudo">
+<pre><code>
+/* Bordas arredondadas, sombras e transições */
+border-radius:50%;
+box-shadow:2px 2px 10px #888;
+transition:0.3s;
+
+/* HTML interessante */
+<div class="card">Conteúdo</div>
+<span class="tooltip">Hover
+    <span>Tooltip incrível!</span>
+</span>
+</code></pre>
+</div>
+
+<!-- Página 8 — Magias JS e DOM -->
+<button class="acordeao">Página 8 — Magias JS & DOM</button>
+<div class="conteudo">
+<pre><code>
+// Seleção rápida
+const titulo = document.querySelector("h1");
+
+// Classes dinâmicas
+titulo.classList.add("ativo");
+titulo.classList.remove("ativo");
+
+// Alterar estilo direto
+titulo.style.color = "red";
+
+// Criar elemento novo
+const novo = document.createElement("p");
+novo.textContent = "Parágrafo criado via JS";
+document.body.appendChild(novo);
+</code></pre>
+</div>
+
+<!-- Página 9 — Eventos JS Simples -->
+<button class="acordeao">Página 9 — Eventos JS</button>
+<div class="conteudo">
+<pre><code>
+const btn = document.querySelector("button.acordeao");
+btn.addEventListener("click", ()=> alert("Clicou!"));
+
+document.addEventListener("keydown", e=>{
+    console.log("Tecla pressionada:", e.key);
+});
+</code></pre>
+</div>
+
+<!-- Página 10 — Animações CSS -->
+<button class="acordeao">Página 10 — Animações CSS</button>
+<div class="conteudo">
+<pre><code>
+/* Move box horizontalmente */
+@keyframes mover {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(50px); }
+    100% { transform: translateX(0); }
+}
+div.box { animation: mover 2s infinite; }
+</code></pre>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll(".acordeao").forEach(btn => {
+    btn.addEventListener("click", () => {
+        btn.nextElementSibling.style.display =
+            btn.nextElementSibling.style.display === "block" ? "none" : "block";
+    });
+});
+</script>
+
+</body>
+</html>
