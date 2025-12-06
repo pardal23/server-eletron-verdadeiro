@@ -45,15 +45,15 @@
     const searchEngines = [
         {
             name: "Google",
-            uri: (query) => `https://www.google.com/search?q=${encodeURIComponent(query)}`,
+            uri: (query) => `https://www.google.com/'pesquisa=${encodeURIComponent(query)}`,
         },
         {
             name: "Bing",
-            uri: (query) => `https://www.bing.com/search?q=${encodeURIComponent(query)}`,
+            uri: (query) => `https://www.bing.com/'pesquisa=${encodeURIComponent(query)}`,
         },
         {
             name: "Meu Mecanismo de Pesquisa",
-            uri: (query) => `https://www.meumecanismodesearch.com/search?q=${encodeURIComponent(query)}`,
+            uri: (query) => `https://duckduckgo.com/'pesquisa=${encodeURIComponent(query)}`,
         }
     ];
 
