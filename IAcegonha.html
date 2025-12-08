@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA Cegonha</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f8ff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            border: 1px solid #ccc;
+        }
+
+        #stork {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            transition: transform 0.5s;
+            cursor: pointer;
+        }
+
+        #input-container {
+            margin-top: 20px;
+        }
+
+        #user-input {
+            padding: 10px;
+            width: 300px;
+        }
+
+        #response {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<h1 style="color:blue;">Click na cegonha</h1>
+<body>
+    <div id="container">
+        <img id="stork" src="https://cdn.pixabay.com/photo/2023/03/15/17/49/white-stork-7855080_1280.jpg" alt="Cegonha">
+    </div>
+
+    <div id="input-container">
+       <h2 style="color:orange;">faça a sua pergunta há cegonha<h2>
+        <input id="user-input" type="text" placeholder="Faça uma pergunta..." />
+        <button id="ask-button">Perguntar</button>
+        <div id="response"></div>
+    </div>
+
+    <script>
+        const stork = document.getElementById('stork');
+        const userInput = document.getElementById('user-input');
+        const responseDiv = document.getElementById('response');
+        const askButton = document.getElementById('ask-button');
+        const container = document.getElementById('container');
+
+        let intelligence = [];
+        let learnedSentences = [];
+
+        function randomPosition() {
+            const x = Math.random() * (container.clientWidth - 100);
+            const y = Math.random() * (container.clientHeight - 100);
+            return { x, y };
+        }
+
+        function moveStork() {
+            const { x, y } = randomPosition();
+            stork.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function addIntelligence(words) {
+            words.forEach(word => {
+                if (!intelligence.includes(word)) {
+                    intelligence.push(word);
+                }
+            });
+        }
+
+        function generateResponse(question) {
+            const words = question.split(' ');
+            addIntelligence(words);
+            let responseText = `Você perguntou: "${question}". `;
+            
+            // Respostas mais elaboradas
+            if (words.includes('nome')) {
+                responseText += `Meu nome é Cegonha Sabichona!`;
+            } else if (words.includes('como') && words.includes('você')) {
+                responseText += `Estou sempre aprendendo com cada nova interação!`;
+            } else if (learnedSentences.length > 0) {
+                const randomLearnedResponse = learnedSentences[Math.floor(Math.random() * learnedSentences.length)];
+                responseText += `Lembro que você comentou sobre "${randomLearnedResponse}". Isso foi interessante!`;
+            } else {
+                responseText += `Não tenho uma resposta precisa para isso, mas estou ansiosa para aprender mais!`;
+            }
+
+            // Acumular uma nova frase com base na pergunta
+            const newSentence = `Aprendi recentemente sobre a palavra "${words[Math.floor(Math.random() * words.length)]}", o que me ajuda a entender melhor seu contexto.`;
+            learnedSentences.push(newSentence);
+            
+            // Respostas mais criativas
+            if (Math.random() > 0.5) {
+                responseText += ` Aliás, você sabia que as cegonhas são conhecidas por trazer sorte?`;
+            }
+
+            return responseText;
+        }
+
+        askButton.addEventListener('click', () => {
+            const question = userInput.value.trim();
+            if (question) {
+                const response = generateResponse(question);
+                responseDiv.textContent = response;
+                moveStork();
+                userInput.value = ''; // Limpa o campo de entrada
+            }
+        });
+
+        stork.addEventListener('click', () => {
+            alert("A cegonha clicou!");
+            moveStork();
+        });
+
+        moveStork(); // Move a cegonha inicialmente
+    </script>
+</body>
+</html>
