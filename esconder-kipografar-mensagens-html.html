@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Laboratório de Código Oculto - 2025</title>
+    <style>
+        body { font-family: 'Courier New', monospace; background: #0d1117; color: #58a6ff; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; border: 1px solid #30363d; padding: 20px; border-radius: 8px; }
+        textarea { width: 100%; height: 100px; background: #161b22; color: #c9d1d9; border: 1px solid #30363d; margin: 10px 0; padding: 10px; }
+        button { background: #238636; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px; }
+        button:hover { background: #2ea043; }
+        .output-box { background: #000; color: #7ee787; padding: 15px; border-left: 4px solid #238636; white-space: pre-wrap; word-break: break-all; margin-top: 20px; font-size: 12px; }
+        h2 { color: #f0e68c; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Operação Cegonha 2025</h1>
+    <p><i>Estudo educacional de ocultação de dados em strings.</i></p>
+
+    <h2>1. Esconder Mensagem (A "Cegonha")</h2>
+    <input type="text" id="senha" placeholder="Senha da Cegonha" style="padding: 8px; width: 200px;">
+    <textarea id="msgOriginal" placeholder="Escreva a mensagem secreta aqui..."></textarea>
+    <button onclick="gerarCegonha()">Gerar Código Camuflado</button>
+
+    <div id="resultadoGerado" class="output-box" style="display:none;"></div>
+
+    <hr style="margin: 30px 0; border: 0; border-top: 1px dashed #30363d;">
+
+    <h2>2. Revelar Mensagem (O "Nascimento")</h2>
+    <textarea id="codigoParaDecifrar" placeholder="Cole aqui o código HTML que contém a mensagem oculta..."></textarea>
+    <button onclick="revelarCegonha()">Extrair Mensagem</button>
+    
+    <div id="msgRevelada" class="output-box" style="display:none; color: #ff7b72;"></div>
+</div>
+
+<script>
+    // Função simples de cifra XOR para estudo
+    function cipher(text, key) {
+        return btoa(text.split('').map((char, i) => 
+            String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))
+        ).join(''));
+    }
+
+    function decipher(encoded, key) {
+        let decoded = atob(encoded);
+        return decoded.split('').map((char, i) => 
+            String.fromCharCode(char.charCodeAt(0) ^ key.charCodeAt(i % key.length))
+        ).join('');
+    }
+
+    function gerarCegonha() {
+        const msg = document.getElementById('msgOriginal').value;
+        const key = document.getElementById('senha').value;
+        
+        if(!key) return alert("Define uma senha!");
+
+        const encrypted = cipher(msg, key);
+        
+        // A "Cegonha": Um código HTML de aparência normal que esconde a hash no final
+        const fakeCode = `<!-- DEBUG_LOG_START -->\n<div class="header-v3">\n  <span>System OK</span>\n</div>\n<!-- ID:${encrypted} -->\n<!-- DEBUG_LOG_END -->`;
+        
+        document.getElementById('resultadoGerado').innerText = fakeCode;
+        document.getElementById('resultadoGerado').style.display = 'block';
+    }
+
+    function revelarCegonha() {
+        const code = document.getElementById('codigoParaDecifrar').value;
+        const key = document.getElementById('senha').value;
+
+        try {
+            // Lógica para encontrar o marcador "ID:" dentro dos comentários
+            const match = code.match(/ID:([A-Za-z0-9+/=]+)/);
+            if (match && match[1]) {
+                const finalMsg = decipher(match[1], key);
+                document.getElementById('msgRevelada').innerText = "MENSAGEM REVELADA: " + finalMsg;
+                document.getElementById('msgRevelada').style.display = 'block';
+            } else {
+                alert("Nenhuma cegonha encontrada neste código!");
+            }
+        } catch(e) {
+            alert("Erro: Senha errada ou código corrompido.");
+        }
+    }
+</script>
+
+</body>
+</html>
