@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Link Direto P2P</title>
+    <style>
+        body { background: #0a0a0a; color: #00ff41; font-family: 'Courier New', monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .caixa { background: #111; padding: 20px; border: 1px solid #00ff41; width: 90%; max-width: 450px; box-shadow: 0 0 15px rgba(0,255,65,0.2); }
+        textarea { width: 100%; height: 60px; background: #000; color: #00ff41; border: 1px solid #00ff41; margin: 5px 0; font-size: 9px; resize: none; }
+        input { width: 100%; padding: 10px; margin: 10px 0; background: #000; border: 1px solid #00ff41; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #00ff41; border: none; color: #000; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        #chat { height: 150px; overflow-y: auto; border: 1px solid #333; padding: 10px; margin-bottom: 10px; font-size: 13px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Inicialização -->
+    <div id="setup" class="caixa">
+        <h2 style="margin:0 0 15px 0">ACRESO_P2P</h2>
+        <input type="password" id="pass" placeholder="Senha cegonha...">
+        <button onclick="boot()">INICIALIZAR</button>
+    </div>
+
+    <!-- Interface de Comunicação -->
+    <div id="p2p-area" class="caixa hidden">
+        <div id="chat"><i>Aguardando link...</i></div>
+        <input type="text" id="msg" placeholder="Escrever..." disabled>
+        
+        <div style="font-size: 10px; color: #888;">TEU CÓDIGO (COPIAR):</div>
+        <textarea id="localSdp" readonly onclick="this.select()"></textarea>
+        
+        <div style="font-size: 10px; color: #888;">CÓDIGO REMOTO (COLAR):</div>
+        <textarea id="remoteSdp"></textarea>
+        <button onclick="connect()" style="background:#fff">LIGAR DISPOSITIVOS</button>
+    </div>
+
+    <script>
+        const SENHA_KEY = "cegonha";
+        let pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+        let dc;
+
+        function boot() {
+            const input = document.getElementById('pass').value;
+            if (input.toLowerCase() === SENHA_KEY) {
+                document.getElementById('setup').classList.add('hidden');
+                document.getElementById('p2p-area').classList.remove('hidden');
+                startSignaling();
+            } else {
+                alert("ACESSO NEGADO");
+            }
+        }
+
+        function startSignaling() {
+            dc = pc.createDataChannel("chat");
+            setupDC(dc);
+            pc.onicecandidate = e => {
+                if (!e.candidate) document.getElementById('localSdp').value = btoa(JSON.stringify(pc.localDescription));
+            };
+            pc.createOffer().then(o => pc.setLocalDescription(o));
+            pc.ondatachannel = e => setupDC(e.channel);
+        }
+
+        function setupDC(chan) {
+            chan.onopen = () => {
+                document.getElementById('msg').disabled = false;
+                log("SISTEMA ONLINE");
+            };
+            chan.onmessage = e => log("RECEBIDO: " + e.data, "#00ff41");
+        }
+
+        async function connect() {
+            const raw = document.getElementById('remoteSdp').value;
+            if(!raw) return;
+            const desc = new RTCSessionDescription(JSON.parse(atob(raw)));
+            await pc.setRemoteDescription(desc);
+            if (desc.type === "offer") {
+                const ans = await pc.createAnswer();
+                await pc.setLocalDescription(ans);
+            }
+        }
+
+        function log(m, cor = "#eee") {
+            const c = document.getElementById('chat');
+            c.innerHTML += `<div style="color:${cor}">> ${m}</div>`;
+            c.scrollTop = c.scrollHeight;
+        }
+
+        document.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter' && !document.getElementById('msg').disabled) {
+                const i = document.getElementById('msg');
+                dc.send(i.value);
+                log("TU: " + i.value, "#888");
+                i.value = "";
+            }
+        });
+    </script>
+</body>
+</html>
